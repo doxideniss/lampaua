@@ -4,9 +4,9 @@
   function openNetflixActivity(type) {
     let url = "";
     if (type === "movie") {
-      url = "discover/movie?with_networks=213";
+      url = "discover/movie";
     } else {
-      url = "discover/tv?first_air_date.lte=2025-12-31&first_air_date.gte=2020-01-01&with_networks=213";
+      url = "discover/tv?first_air_date.lte=2025-12-31&first_air_date.gte=2020-01-01";
     }
 
     console.log("🔗 Відкриваю Netflix Activity:", url);
@@ -16,6 +16,7 @@
       title: `Netflix – ${type === 'movie' ? 'Фільми' : 'Серіали'}`,
       component: "category_full",
       source: "tmdb",
+      network: "213",
       card_type: "true",
       page: 1
     });
