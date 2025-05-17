@@ -91,6 +91,22 @@
   }
 
   function addMenuItem(title, id, onClick) {
+    const ITEM_TV_SELECTOR = '[data-action="tv"]';
+    const ITEM_MOVE_TIMEOUT = 2000;
+
+    const moveItemAfter = function moveItemAfter(item, after) {
+      return setTimeout(function () {
+        const menuRoot = Lampa.Menu.render();
+        if (menuRoot.length) {
+          const $after = menuRoot.find(after);
+          const $item = $(item);
+          if ($after.length && $item.length) {
+            $after.after($item);
+          }
+        }
+      }, ITEM_MOVE_TIMEOUT);
+    };
+
     function tryAppend() {
       const menuList = $(".menu .menu__list").eq(0);
 
@@ -106,17 +122,13 @@
           </li>
         `);
         item.on("hover:enter", onClick);
-
-        const tvItem = menuList.find('[data-action="tv"]');
-        if (tvItem.length) {
-          item.insertAfter(tvItem);
-        } else {
-          menuList.append(item);
-        }
+        menuList.append(item);
+        moveItemAfter(`[data-action="${id}"]`, ITEM_TV_SELECTOR);
       } else {
         setTimeout(tryAppend, 300);
       }
     }
+
     tryAppend();
   }
 
