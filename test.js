@@ -22,17 +22,23 @@
   }
 
   function addMenuItem(title, id, onClick) {
-    setTimeout(() => {
-      console.log(`📌 Додаю кнопку: ${title}`);
-      const item = $(
-        `<li class="menu__item selector" data-action="${id}">
-          <div class="menu__ico">🎬</div>
-          <div class="menu__text">${title}</div>
-        </li>`
-      );
-      item.on("hover:enter", onClick);
-      $(".menu .menu__list").eq(0).append(item);
-    }, 500);
+    function tryAppend() {
+      const menuList = $(".menu .menu__list").eq(0);
+      if (menuList.length) {
+        console.log(`📌 Додаю кнопку: ${title}`);
+        const item = $(
+          `<li class="menu__item selector" data-action="${id}">
+            <div class="menu__ico">🎬</div>
+            <div class="menu__text">${title}</div>
+          </li>`
+        );
+        item.on("hover:enter", onClick);
+        menuList.append(item);
+      } else {
+        setTimeout(tryAppend, 300);
+      }
+    }
+    tryAppend();
   }
 
   function init() {
@@ -40,8 +46,8 @@
 
     console.log("🎯 Netflix Hub плагін ініціалізовано");
 
-    const enableFilms = Lampa.Storage.get("netflix_enhanced_films", "1") === "1";
-    const enableSeries = Lampa.Storage.get("netflix_enhanced_series", "1") === "1";
+    const enableFilms = Number(Lampa.Storage.get("netflix_enhanced_films", 1)) === 1;
+    const enableSeries = Number(Lampa.Storage.get("netflix_enhanced_series", 1)) === 1;
 
     if (enableFilms) addMenuItem("Netflix Фільми", "netflix_movies", () => openNetflixActivity("movie"));
     if (enableSeries) addMenuItem("Netflix Серіали", "netflix_series", () => openNetflixActivity("tv"));
