@@ -13,7 +13,9 @@
       title = "Netflix – Серіали";
     }
 
-    if (sort === "first_air_date.desc") {
+    const isNew = sort === "first_air_date.desc" || sort === "primary_release_date.desc";
+
+    if (isNew) {
       url += "&vote_count.gte=300";
       title += " – Нові";
     } else {
@@ -32,12 +34,14 @@
   }
 
   function showNetflixSortFilter(type) {
+    const sortItems = [
+      { title: "Топ", value: "" },
+      { title: "Нові", value: type === "movie" ? "primary_release_date.desc" : "first_air_date.desc" }
+    ];
+
     Lampa.Select.show({
       title: "Netflix – Сортування",
-      items: [
-        { title: "Топ", value: "" },
-        { title: "Нові", value: "first_air_date.desc" }
-      ],
+      items: sortItems,
       no_scroll: true,
       onSelect: (selected) => openNetflixActivity(type, selected.value)
     });
@@ -59,12 +63,12 @@
     function tryAppend() {
       const menuList = $(".menu .menu__list").eq(0);
       if (menuList.length) {
-        const item = $(`
-          <li class="menu__item selector" data-action="${id}">
+        const item = $(
+          `<li class="menu__item selector" data-action="${id}">
             <div class="menu__ico">🎬</div>
             <div class="menu__text">${title}</div>
-          </li>
-        `);
+          </li>`
+        );
         item.on("hover:enter", onClick);
         menuList.append(item);
       } else {
