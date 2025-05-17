@@ -3,8 +3,6 @@
 
   const i18n = {
     uk: {
-      show: "Показувати",
-      hide: "Приховати",
       netflix: "Netflix",
       netflix_button: "Netflix",
       select_type: "Netflix – Вибери тип",
@@ -15,8 +13,6 @@
       series: "Серіали"
     },
     en: {
-      show: "Show",
-      hide: "Hide",
       netflix: "Netflix",
       netflix_button: "Netflix",
       select_type: "Netflix – Select type",
@@ -135,7 +131,7 @@
   function init() {
     if (window.netflix_enhanced_ready) return;
 
-    const enabled = Number(Lampa.Storage.get("netflix_enhanced_entry", 0)) === 1;
+    const enabled = Boolean(Lampa.Storage.get("netflix_enhanced_entry"));
 
     if (enabled) addMenuItem(t.netflix, "netflix_main", showNetflixTypeFilter);
 
@@ -150,19 +146,15 @@
       component: "netflix_enhanced",
       param: {
         name: "netflix_enhanced_entry",
-        type: "select",
-        values: {
-          1: t.show,
-          0: t.hide
-        },
-        default: 0
+        type: "trigger",
+        default: false
       },
       field: {
         name: t.netflix_button
       },
       onChange: function (value) {
-        const existing = $("[data-action='netflix_main']");
-        if (value === "1") {
+        const existing = $(`[data-action='netflix_main']`);
+        if (value) {
           if (!existing.length) addMenuItem(t.netflix, "netflix_main", showNetflixTypeFilter);
         } else {
           existing.remove();
