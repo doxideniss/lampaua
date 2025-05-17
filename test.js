@@ -1,24 +1,31 @@
 (function () {
   "use strict";
 
-  function openNetflixActivity(type) {
-    let url = "";
-    if (type === "movie") {
-      url = "discover/movie";
-    } else {
-      url = "discover/tv?first_air_date.lte=2025-12-31&first_air_date.gte=2020-01-01";
-    }
+  function openNetflixCategory(sort) {
+    let url = `discover/tv?sort_by=${sort}`;
 
-    console.log("🔗 Відкриваю Netflix Activity:", url);
+    console.log("🔗 Відкриваю Netflix Category:", url);
 
     Lampa.Activity.push({
       url: url,
-      title: `Netflix – ${type === 'movie' ? 'Фільми' : 'Серіали'}`,
+      title: `Netflix – ${sort === 'vote_average.desc' ? 'Топ' : 'Нові'}`,
       component: "category_full",
       source: "tmdb",
       networks: "213",
       card_type: "true",
       page: 1
+    });
+  }
+
+  function showNetflixFilter() {
+    Lampa.Select.show({
+      title: "Netflix – Вибери категорію",
+      items: [
+        { title: "Топ", value: "vote_average.desc" },
+        { title: "Нові", value: "first_air_date.desc" }
+      ],
+      no_scroll: true,
+      onSelect: (selected) => openNetflixCategory(selected.value)
     });
   }
 
@@ -47,11 +54,9 @@
 
     console.log("🎯 Netflix Hub плагін ініціалізовано");
 
-    const enableFilms = Number(Lampa.Storage.get("netflix_enhanced_films", 1)) === 1;
-    const enableSeries = Number(Lampa.Storage.get("netflix_enhanced_series", 1)) === 1;
+    const enabled = Number(Lampa.Storage.get("netflix_enhanced_entry", 0)) === 1;
 
-    if (enableFilms) addMenuItem("Netflix Фільми", "netflix_movies", () => openNetflixActivity("movie"));
-    if (enableSeries) addMenuItem("Netflix Серіали", "netflix_series", () => openNetflixActivity("tv"));
+    if (enabled) addMenuItem("Netflix", "netflix_main", showNetflixFilter);
 
     // Settings
     Lampa.SettingsApi.addComponent({
@@ -63,35 +68,16 @@
     Lampa.SettingsApi.addParam({
       component: "netflix_enhanced",
       param: {
-        name: "netflix_enhanced_films",
+        name: "netflix_enhanced_entry",
         type: "select",
         values: {
           1: "Показувати",
           0: "Приховати"
         },
-        default: 1
+        default: 0
       },
       field: {
-        name: "Netflix Фільми"
-      },
-      onChange: function () {
-        Lampa.Helper.show("Перезапусти Lampa для застосування змін.");
-      }
-    });
-
-    Lampa.SettingsApi.addParam({
-      component: "netflix_enhanced",
-      param: {
-        name: "netflix_enhanced_series",
-        type: "select",
-        values: {
-          1: "Показувати",
-          0: "Приховати"
-        },
-        default: 1
-      },
-      field: {
-        name: "Netflix Серіали"
+        name: "Кнопка Netflix"
       },
       onChange: function () {
         Lampa.Helper.show("Перезапусти Lampa для застосування змін.");
