@@ -2,14 +2,27 @@
   "use strict";
 
   function openNetflixActivity(type, sort) {
-    let url = `discover/${type}?language=ua&with_networks=213`;
+    let url = "";
+    let title = "Netflix";
+
+    if (type === "movie") {
+      url = `discover/movie?language=ua&with_watch_providers=8`;
+      title = "Netflix – Фільми";
+    } else {
+      url = `discover/tv?language=ua&with_networks=213`;
+      title = "Netflix – Серіали";
+    }
+
     if (sort === "first_air_date.desc") {
       url += "&vote_count.gte=300";
+      title += " – Нові";
+    } else {
+      title += " – Топ";
     }
 
     Lampa.Activity.push({
       url: url,
-      title: `Netflix`,
+      title: title,
       component: "category_full",
       source: "tmdb",
       sort: sort,
@@ -46,12 +59,12 @@
     function tryAppend() {
       const menuList = $(".menu .menu__list").eq(0);
       if (menuList.length) {
-        const item = $(
-          `<li class="menu__item selector" data-action="${id}">
+        const item = $(`
+          <li class="menu__item selector" data-action="${id}">
             <div class="menu__ico">🎬</div>
             <div class="menu__text">${title}</div>
-          </li>`
-        );
+          </li>
+        `);
         item.on("hover:enter", onClick);
         menuList.append(item);
       } else {
