@@ -20,7 +20,7 @@
     Lampa.Select.show({
       title: "Netflix – Вибери категорію",
       items: [
-        { title: "Топ", value: "vote_average.desc" },
+        { title: "Топ", value: "popularity.desc" },
         { title: "Нові", value: "first_air_date.desc" }
       ],
       no_scroll: true,
