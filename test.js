@@ -1,25 +1,55 @@
 (function () {
   "use strict";
 
+  const i18n = {
+    uk: {
+      show: "Показувати",
+      hide: "Приховати",
+      netflix: "Netflix",
+      netflix_button: "Netflix",
+      select_type: "Netflix – Вибери тип",
+      sort_title: "Netflix – Сортування",
+      top: "Топ",
+      new: "Нові",
+      movies: "Фільми",
+      series: "Серіали"
+    },
+    en: {
+      show: "Show",
+      hide: "Hide",
+      netflix: "Netflix",
+      netflix_button: "Netflix",
+      select_type: "Netflix – Select type",
+      sort_title: "Netflix – Sort",
+      top: "Top",
+      new: "New",
+      movies: "Movies",
+      series: "Series"
+    }
+  };
+
+  const lang = Lampa.Storage.get('language', 'uk');
+  const t = i18n[lang] || i18n.uk;
+
   function openNetflixActivity(type, sort) {
     let url = "";
-    let title = "Netflix";
+    let title = t.netflix;
 
     if (type === "movie") {
       url = `discover/movie?language=ua&with_watch_providers=8&watch_region=UA`;
-      title = "Netflix – Фільми";
+      title += ` – ${t.movies}`;
     } else {
       url = `discover/tv?language=ua&with_networks=213`;
-      title = "Netflix – Серіали";
+      title += ` – ${t.series}`;
     }
 
     const isNew = sort === "first_air_date.desc" || sort === "primary_release_date.desc";
 
     if (isNew) {
       url += "&vote_count.gte=300";
-      title += " – Нові";
+      title += ` – ${t.new}`;
     } else {
-      title += " – Топ";
+      title += ` – ${t.top}`;
     }
 
     if (sort) url += `&sort_by=${sort}`;
@@ -36,12 +66,12 @@
 
   function showNetflixSortFilter(type) {
     const sortItems = [
-      { title: "Топ", value: "" },
-      { title: "Нові", value: type === "movie" ? "primary_release_date.desc" : "first_air_date.desc" }
+      { title: t.top, value: "" },
+      { title: t.new, value: type === "movie" ? "primary_release_date.desc" : "first_air_date.desc" }
     ];
 
     Lampa.Select.show({
-      title: "Netflix – Сортування",
+      title: t.sort_title,
       items: sortItems,
       no_scroll: true,
       onSelect: (selected) => openNetflixActivity(type, selected.value)
@@ -50,10 +80,10 @@
 
   function showNetflixTypeFilter() {
     Lampa.Select.show({
-      title: "Netflix – Вибери тип",
+      title: t.select_type,
       items: [
-        { title: "Серіали", value: "tv" },
-        { title: "Фільми", value: "movie" }
+        { title: t.series, value: "tv" },
+        { title: t.movies, value: "movie" }
       ],
       no_scroll: true,
       onSelect: (selected) => showNetflixSortFilter(selected.value)
@@ -63,15 +93,26 @@
   function addMenuItem(title, id, onClick) {
     function tryAppend() {
       const menuList = $(".menu .menu__list").eq(0);
+
       if (menuList.length) {
         const item = $(`
           <li class="menu__item selector" data-action="${id}">
-            <div class="menu__ico">🎬</div>
+            <div class="menu__ico">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path fill="currentColor" d="M84 0v512h88V308l88 204h88V0h-88v204l-88-204z"/>
+              </svg>
+            </div>
             <div class="menu__text">${title}</div>
           </li>
         `);
         item.on("hover:enter", onClick);
-        menuList.append(item);
+
+        const tvItem = menuList.find('[data-action="tv"]');
+        if (tvItem.length) {
+          item.insertAfter(tvItem);
+        } else {
+          menuList.append(item);
+        }
       } else {
         setTimeout(tryAppend, 300);
       }
@@ -84,12 +125,12 @@
 
     const enabled = Number(Lampa.Storage.get("netflix_enhanced_entry", 0)) === 1;
 
-    if (enabled) addMenuItem("Netflix", "netflix_main", showNetflixTypeFilter);
+    if (enabled) addMenuItem(t.netflix, "netflix_main", showNetflixTypeFilter);
 
     // Settings
     Lampa.SettingsApi.addComponent({
       component: "netflix_enhanced",
-      name: "Netflix Enhanced",
+      name: "Netflix",
       icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M84 0v512h88V308l88 204h88V0h-88v204l-88-204z"/></svg>'
     });
 
@@ -99,18 +140,18 @@
         name: "netflix_enhanced_entry",
         type: "select",
         values: {
-          1: "Показувати",
-          0: "Приховати"
+          1: t.show,
+          0: t.hide
         },
         default: 0
       },
       field: {
-        name: "Кнопка Netflix"
+        name: t.netflix_button
       },
       onChange: function (value) {
         const existing = $("[data-action='netflix_main']");
         if (value === "1") {
-          if (!existing.length) addMenuItem("Netflix", "netflix_main", showNetflixTypeFilter);
+          if (!existing.length) addMenuItem(t.netflix, "netflix_main", showNetflixTypeFilter);
         } else {
           existing.remove();
         }
