@@ -17,7 +17,7 @@
     };
 
     const render = () => {
-      const url = `discover/${filter.type}?with_watch_providers=8&watch_region=UA&sort_by=${filter.sort_by}`;
+      const url = `discover/${filter.type}?with_watch_providers=8&watch_region=UA&sort_by=${filter.sort_by}&with_original_language=en&vote_count.gte=100`;
 
       Lampa.Activity.push({
         url: url,
