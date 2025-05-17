@@ -154,9 +154,9 @@
         name: t.netflix_button
       },
       onChange: function (value) {
-        console.log('[Netflix Plugin] Налаштування змінено:', value, typeof value);
+        const normalized = value === true || value === "true";
         const existing = $(`[data-action='netflix_main']`);
-        if (value) {
+        if (normalized) {
           if (!existing.length) addMenuItem(t.netflix, "netflix_main", showNetflixTypeFilter);
         } else {
           existing.remove();
