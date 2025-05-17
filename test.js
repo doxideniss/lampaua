@@ -102,8 +102,13 @@
       field: {
         name: "Кнопка Netflix"
       },
-      onChange: function () {
-        Lampa.Helper.show("Перезапусти Lampa для застосування змін.");
+      onChange: function (value) {
+        const existing = $("[data-action='netflix_main']");
+        if (value === "1") {
+          if (!existing.length) addMenuItem("Netflix", "netflix_main", showNetflixTypeFilter);
+        } else {
+          existing.remove();
+        }
       }
     });
 
