@@ -16,7 +16,7 @@
       title: `Netflix – ${type === 'movie' ? 'Фільми' : 'Серіали'}`,
       component: "category_full",
       source: "tmdb",
-      network: "213",
+      networks: "213",
       card_type: "true",
       page: 1
     });
