@@ -8,7 +8,7 @@
 
     Lampa.Activity.push({
       url: url,
-      title: `Netflix – ${sort === 'vote_average.desc' ? 'Топ' : 'Нові'}`,
+      title: `Netflix – ${sort === 'popularity.desc' ? 'Топ' : 'Нові'}`,
       component: "category_full",
       source: "tmdb",
       card_type: "true",
