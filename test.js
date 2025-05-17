@@ -131,7 +131,8 @@
   function init() {
     if (window.netflix_enhanced_ready) return;
 
-    const enabled = Boolean(Lampa.Storage.get("netflix_enhanced_entry"));
+    const raw = Lampa.Storage.get("netflix_enhanced_entry");
+    const enabled = raw === true || raw === "true";
 
     if (enabled) addMenuItem(t.netflix, "netflix_main", showNetflixTypeFilter);
 
@@ -153,6 +154,7 @@
         name: t.netflix_button
       },
       onChange: function (value) {
+        console.log('[Netflix Plugin] Налаштування змінено:', value);
         const existing = $(`[data-action='netflix_main']`);
         if (value) {
           if (!existing.length) addMenuItem(t.netflix, "netflix_main", showNetflixTypeFilter);
