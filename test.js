@@ -22,12 +22,13 @@
       title += " – Топ";
     }
 
+    if (sort) url += `&sort_by=${sort}`;
+
     Lampa.Activity.push({
       url: url,
       title: title,
       component: "category_full",
       source: "tmdb",
-      sort: sort,
       card_type: "true",
       page: 1
     });
@@ -63,12 +64,12 @@
     function tryAppend() {
       const menuList = $(".menu .menu__list").eq(0);
       if (menuList.length) {
-        const item = $(
-          `<li class="menu__item selector" data-action="${id}">
+        const item = $(`
+          <li class="menu__item selector" data-action="${id}">
             <div class="menu__ico">🎬</div>
             <div class="menu__text">${title}</div>
-          </li>`
-        );
+          </li>
+        `);
         item.on("hover:enter", onClick);
         menuList.append(item);
       } else {
