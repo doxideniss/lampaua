@@ -6,7 +6,7 @@
     if (type === "movie") {
       url = "discover/movie?with_networks=213";
     } else {
-      url = "discover/tv?with_networks=213";
+      url = "discover/tv?first_air_date.lte=2025-12-31&first_air_date.gte=2020-01-01&with_networks=213";
     }
 
     Lampa.Activity.push({
@@ -33,8 +33,8 @@
   function init() {
     if (window.netflix_enhanced_ready) return;
 
-    const enableFilms = Lampa.Storage.get("netflix_enhanced_films") === "1";
-    const enableSeries = Lampa.Storage.get("netflix_enhanced_series") === "1";
+    const enableFilms = Lampa.Storage.get("netflix_enhanced_films", "1") === "1";
+    const enableSeries = Lampa.Storage.get("netflix_enhanced_series", "1") === "1";
 
     if (enableFilms) addMenuItem("Netflix Фільми", "netflix_movies", () => openNetflixActivity("movie"));
     if (enableSeries) addMenuItem("Netflix Серіали", "netflix_series", () => openNetflixActivity("tv"));
