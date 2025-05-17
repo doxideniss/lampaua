@@ -2,7 +2,7 @@
   "use strict";
 
   function openNetflixCategory(sort) {
-    let url = `discover/tv?sort_by=${sort}&watch_region=UA&with_watch_providers=8`;
+    let url = `discover/movie?sort_by=${sort}&watch_region=UA&with_watch_providers=8`;
 
     console.log("🔗 Відкриваю Netflix Category:", url);
 
