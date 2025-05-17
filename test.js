@@ -2,26 +2,16 @@
   "use strict";
 
   function openNetflixCategory(sort) {
-    let url = `discover/movie?sort_by=${sort}&watch_region=UA&with_watch_providers=8`;
 
-    console.log("🔗 Відкриваю Netflix Category:", url);
-
-    Lampa.Activity.push({
-      url: url,
-      title: `Netflix – ${sort === 'popularity.desc' ? 'Топ' : 'Нові'}`,
-      component: "category_full",
-      source: "tmdb",
-      card_type: "true",
-      page: 1
-    });
+    Lampa.Activity.push({url:"discover/tv?language=ua&with_networks=213",title:"Netflix",component:"category_full",source:"tmdb",sort:sort,card_type:"true",page:1});
   }
 
   function showNetflixFilter() {
     Lampa.Select.show({
       title: "Netflix – Вибери категорію",
       items: [
-        { title: "Топ", value: "popularity.desc" },
-        { title: "Нові", value: "first_air_date.desc" }
+        { title: "Топ", value: "popularity" },
+        { title: "Нові", value: "now" }
       ],
       no_scroll: true,
       onSelect: (selected) => openNetflixCategory(selected.value)
