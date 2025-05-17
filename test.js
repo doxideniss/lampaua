@@ -2,7 +2,7 @@
   "use strict";
 
   function openNetflixCategory(sort) {
-    let url = `discover/tv?sort_by=${sort}`;
+    let url = `discover/tv?sort_by=${sort}&watch_region=UA&with_watch_providers=8`;
 
     console.log("🔗 Відкриваю Netflix Category:", url);
 
@@ -11,7 +11,6 @@
       title: `Netflix – ${sort === 'vote_average.desc' ? 'Топ' : 'Нові'}`,
       component: "category_full",
       source: "tmdb",
-      networks: "213",
       card_type: "true",
       page: 1
     });
