@@ -1,20 +1,44 @@
 (function () {
   "use strict";
 
-  function openNetflixCategory(sort) {
+  function openNetflixActivity(type, sort) {
+    let url = `discover/${type}?language=ua&with_networks=213`;
+    if (sort === "first_air_date.desc") {
+      url += "&vote_count.gte=300";
+    }
 
-    Lampa.Activity.push({url:"discover/tv?language=ua&with_networks=213",title:"Netflix",component:"category_full",source:"tmdb",sort:sort,card_type:"true",page:1});
+    Lampa.Activity.push({
+      url: url,
+      title: `Netflix`,
+      component: "category_full",
+      source: "tmdb",
+      sort: sort,
+      card_type: "true",
+      page: 1
+    });
   }
 
-  function showNetflixFilter() {
+  function showNetflixSortFilter(type) {
     Lampa.Select.show({
-      title: "Netflix – Вибери категорію",
+      title: "Netflix – Сортування",
       items: [
-        { title: "Топ", value: "popularity" },
-        { title: "Нові", value: "now" }
+        { title: "Топ", value: "" },
+        { title: "Нові", value: "first_air_date.desc" }
       ],
       no_scroll: true,
-      onSelect: (selected) => openNetflixCategory(selected.value)
+      onSelect: (selected) => openNetflixActivity(type, selected.value)
+    });
+  }
+
+  function showNetflixTypeFilter() {
+    Lampa.Select.show({
+      title: "Netflix – Вибери тип",
+      items: [
+        { title: "Серіали", value: "tv" },
+        { title: "Фільми", value: "movie" }
+      ],
+      no_scroll: true,
+      onSelect: (selected) => showNetflixSortFilter(selected.value)
     });
   }
 
@@ -22,7 +46,6 @@
     function tryAppend() {
       const menuList = $(".menu .menu__list").eq(0);
       if (menuList.length) {
-        console.log(`📌 Додаю кнопку: ${title}`);
         const item = $(
           `<li class="menu__item selector" data-action="${id}">
             <div class="menu__ico">🎬</div>
@@ -41,11 +64,9 @@
   function init() {
     if (window.netflix_enhanced_ready) return;
 
-    console.log("🎯 Netflix Hub плагін ініціалізовано");
-
     const enabled = Number(Lampa.Storage.get("netflix_enhanced_entry", 0)) === 1;
 
-    if (enabled) addMenuItem("Netflix", "netflix_main", showNetflixFilter);
+    if (enabled) addMenuItem("Netflix", "netflix_main", showNetflixTypeFilter);
 
     // Settings
     Lampa.SettingsApi.addComponent({
