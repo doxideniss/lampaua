@@ -9,6 +9,8 @@
       url = "discover/tv?first_air_date.lte=2025-12-31&first_air_date.gte=2020-01-01&with_networks=213";
     }
 
+    console.log("🔗 Відкриваю Netflix Activity:", url);
+
     Lampa.Activity.push({
       url: url,
       title: `Netflix – ${type === 'movie' ? 'Фільми' : 'Серіали'}`,
@@ -20,18 +22,23 @@
   }
 
   function addMenuItem(title, id, onClick) {
-    const item = $(
-      `<li class="menu__item selector" data-action="${id}">
-        <div class="menu__ico">🎬</div>
-        <div class="menu__text">${title}</div>
-      </li>`
-    );
-    item.on("hover:enter", onClick);
-    $(".menu .menu__list").eq(0).append(item);
+    setTimeout(() => {
+      console.log(`📌 Додаю кнопку: ${title}`);
+      const item = $(
+        `<li class="menu__item selector" data-action="${id}">
+          <div class="menu__ico">🎬</div>
+          <div class="menu__text">${title}</div>
+        </li>`
+      );
+      item.on("hover:enter", onClick);
+      $(".menu .menu__list").eq(0).append(item);
+    }, 500);
   }
 
   function init() {
     if (window.netflix_enhanced_ready) return;
+
+    console.log("🎯 Netflix Hub плагін ініціалізовано");
 
     const enableFilms = Lampa.Storage.get("netflix_enhanced_films", "1") === "1";
     const enableSeries = Lampa.Storage.get("netflix_enhanced_series", "1") === "1";
@@ -88,7 +95,13 @@
   }
 
   if (window.appready) init();
-  else Lampa.Listener.follow("app", function (e) {
-    if (e.type === "ready") init();
-  });
+  else {
+    Lampa.Listener.follow("app", function (e) {
+      if (e.type === "ready") init();
+    });
+
+    setTimeout(() => {
+      if (!window.netflix_enhanced_ready) init();
+    }, 1000);
+  }
 })();
