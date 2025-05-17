@@ -6,7 +6,7 @@
     let title = "Netflix";
 
     if (type === "movie") {
-      url = `discover/movie?language=ua&with_watch_providers=8`;
+      url = `discover/movie?language=ua&with_watch_providers=8&watch_region=UA`;
       title = "Netflix – Фільми";
     } else {
       url = `discover/tv?language=ua&with_networks=213`;
